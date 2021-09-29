@@ -130,8 +130,9 @@ function activate(context) {
           line = line.trim()
   
           if(item.symbol) {
+            context.workspaceState.update('macAddress.symbol',item.symbol)
+
             if(regMacAddressNoSymbol.test(line)) {
-              context.workspaceState.update('macAddress.symbol',item.symbol)
 
               return macAddressAddSymbol(line,item.symbol)
             } else if(regMacAddressSymbol.test(line)){
