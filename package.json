@@ -3,7 +3,7 @@
 	"displayName": "mac address convert",
 	"description": "replace mac address",
 	"publisher":"blackfloat",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"engines": {
 		"vscode": "^1.60.0"
 	},
@@ -11,14 +11,19 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:test.toggleMacAddress"
+		"onCommand:test.toggleConvert",
+		"onCommand:test.selectConvert"
 	],
 	"main": "./extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "test.toggleMacAddress",
-				"title": "Mac Address Convert"
+				"command": "test.toggleConvert",
+				"title": "Mac Address Toggle Convert"
+			},
+			{
+				"command": "test.selectConvert",
+				"title": "Mac Address Select Convert"
 			}
 		]
 	},
