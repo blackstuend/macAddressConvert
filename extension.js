@@ -4,18 +4,19 @@ const vscode = require("vscode");
 const regMacAddressNoSymbol = /^([a-fA-F0-9]{2}){6}$/
 
 // regex for have symbol mac address
-const regMacAddressSymbol = /^([a-fA-F0-9]{2}[:\.;-]){5}[a-fA-F0-9]{2}$/
+const regMacAddressSymbol = /^([a-fA-F0-9]{2}[:\s,\.;-]){5}[a-fA-F0-9]{2}$/
 
 // add symbol for mac address
 // example: 1234567901A => 12:34:56:78:90:1A
-function macAddressAddSymbol(text,symbol = ':') { 
+function macAddressAddSymbol(text,symbol) { 
   return text.match(/.{1,2}/g).join(symbol)
 }
 
 // remove symbol for mac address
+// symbol: [":",".","-"," ",:";"]
 // example: 12:34:56:78:90:1A => 1234567901A
 function macAddressRemoveSymbol(text) {
-  return text.split(/[:\.;-]/).join("")
+  return text.split(/[:\.;-\s]/).join("")
 }
 
 
@@ -48,7 +49,9 @@ function activate(context) {
         line = line.trim()
 
         if(regMacAddressNoSymbol.test(line)) {
-          return macAddressAddSymbol(line)
+          let symbol = context.workspaceState.get('macAddress.symbol',":")
+
+          return macAddressAddSymbol(line,symbol)
         } else if(regMacAddressSymbol.test(line)) {
           return macAddressRemoveSymbol(line)
         } else if (line.length > 0){
@@ -115,6 +118,10 @@ function activate(context) {
           symbol:';',
           label: "Add symbol(;)"
         },
+        {
+          symbol:' ',
+          label: "Add symbol(space)"
+        },
       ]
 
       vscode.window.showQuickPick(pickItems,{
@@ -124,6 +131,8 @@ function activate(context) {
   
           if(item.symbol) {
             if(regMacAddressNoSymbol.test(line)) {
+              context.workspaceState.update('macAddress.symbol',item.symbol)
+
               return macAddressAddSymbol(line,item.symbol)
             } else if(regMacAddressSymbol.test(line)){
               const noSymBolMacAddress = macAddressRemoveSymbol(line)
